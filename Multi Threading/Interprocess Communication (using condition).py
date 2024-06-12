@@ -5,25 +5,22 @@ from time import *
 class MyData:
     def __init__(self):
         self.data = 0
-        self.flag = False
-        self.lock = Lock()
+        self.conditionVariable = Condition()  # works as flag() and lock()
 
     def put(self, d):
-        while self.flag != False:
-            pass
-        self.lock.acquire()
+        self.conditionVariable.acquire()  # acquire lock :
+        self.conditionVariable.wait(timeout=0)
         self.data = d
-        self.flag = True
-        self.lock.release()
+        self.conditionVariable.notify()  # notifies consumer
+        self.conditionVariable.release()
         sleep(0.5)
 
     def get(self):
-        while self.flag != True:
-            pass
-        self.lock.acquire()
+        self.conditionVariable.acquire()
+        self.conditionVariable.wait(timeout=0)
         x = self.data
-        self.flag = False
-        self.lock.release()
+        self.conditionVariable.notify()
+        self.conditionVariable.release()
         sleep(0.5)
         return x
 

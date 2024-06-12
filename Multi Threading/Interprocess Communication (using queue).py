@@ -1,47 +1,28 @@
 from threading import *
 from time import *
+from queue import *
+
+q = Queue()
 
 
-class MyData:
-    def __init__(self):
-        self.data = 0
-        self.conditionVariable = Condition()  # works as flag() and lock()
-
-    def put(self, d):
-        self.conditionVariable.acquire()  # acquire lock :
-        self.conditionVariable.wait(timeout=0)
-        self.data = d
-        self.conditionVariable.notify()  # notifies consumer
-        self.conditionVariable.release()
-        sleep(0.5)
-
-    def get(self):
-        self.conditionVariable.acquire()
-        self.conditionVariable.wait(timeout=0)
-        x = self.data
-        self.conditionVariable.notify()
-        self.conditionVariable.release()
-        sleep(0.5)
-        return x
-
-
-def producer(data):
+def producer(q):
     i = 1
     while True:
-        data.put(i)
+        q.put(i)
         print('Producer:', i)
+        sleep(0.5)
         i += 1
 
 
-def consumer(data):
+def consumer(q):
     while True:
-        x = data.get()
+        x = q.get()
         print('Consumer:', x)
+        sleep(0.5)
 
 
-data = MyData()
-t1 = Thread(target=lambda: producer(data))
-t2 = Thread(target=lambda: consumer(data))
+t1 = Thread(target=lambda: producer(q))
+t2 = Thread(target=lambda: consumer(q))
 
 t1.start()
 t2.start()
