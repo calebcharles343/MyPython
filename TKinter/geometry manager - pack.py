@@ -15,6 +15,7 @@ win = Tk()
 
 win.title('My First Application')
 win.wm_geometry('+100-100')
+
 '''
 #SIDE
 l1 = Label(win, text='Label 1', bg='red', fg='yellow')
